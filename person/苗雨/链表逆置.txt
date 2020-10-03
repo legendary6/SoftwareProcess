@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    Node * next;
+};
+
+void insertList(Node ** pList, int data) {
+    Node * newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    // 空链表时，新节点就是链表头结点
+    if (*pList == NULL) {  // if (!*pList)
+        *pList = newNode;
+        return;
+    }
+
+    // 循环找到尾节点
+    Node * cur = *pList;
+    while (cur->next != NULL)
+        cur = cur->next;
+    // 在尾节点后面插入新节点
+    cur->next = newNode;
+}
+
+void printList(Node * list) {
+    Node * cur = list;
+    while (cur != NULL){
+        printf("%d ", cur->data);
+        cur = cur->next;
+    }
+    printf("\n");
+}
+// 使用循环完成链表逆置
+Node * reverseList1(Node * list) {
+    if (list == NULL)
+        return NULL;
+    Node * newHead = NULL;
+    Node * pre = NULL;
+    Node * next = NULL;
+    Node * cur = list;
+
+    while (cur != NULL) {
+        next = cur->next;
+        if (next == NULL) {
+            newHead = cur;
+        }
+        cur->next = pre;
+        pre = cur;
+        cur = next;
+    }
+
+    return newHead;
+}
+// 使用递归完成链表逆置
+Node * reverseList2(Node * list) {
+    if (list==NULL || list->next==NULL)
+        return list;
+    Node * newHead = reverseList2(list->next);
+    list->next->next = list;
+    list->next = NULL;
+    return newHead;
+}
+
+
+int main(void)
+{
+    Node * list = NULL;
+    insertList(&list, 100);
+    insertList(&list, 200);
+    insertList(&list, 300);
+    insertList(&list, 400);
+    insertList(&list, 500);
+    printList(list);
+
+    list = reverseList1(list);
+    printList(list);
+
+    list = reverseList2(list);
+    printList(list);
+
+    return 0;
+}
